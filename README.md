@@ -6,18 +6,35 @@ Citrus is a custom-built neural network that learns writing styles from text sam
 
 ---
 
-## 🌐 NEW: Web Interface! (No Coding Required!)
+## 🎯 SUPER SIMPLE MODE (No Commands, No Installation!)
 
-**The easiest way to use Citrus - through your web browser!**
+**The absolute easiest way - Just double-click two files!**
+
+### Step 1: Start the helper
+- **Windows:** Double-click `START.bat`
+- **Mac/Linux:** Double-click `START.sh`
+- (A window opens - keep it open!)
+
+### Step 2: Open the app
+- Double-click `citrus_simple.html`
+- It opens in your browser - use it like any website!
+
+**That's it!** 🎉
+
+👉 **[Full guide: SIMPLE_START.md](SIMPLE_START.md)** 👈
+
+---
+
+## 🌐 Web Interface (Slightly More Advanced)
+
+**Use through web browser with more features:**
 
 ```bash
 ./start_web.sh
 # Then open: http://localhost:5000
 ```
 
-**Perfect for non-coders!** Upload files, train, and generate - all through a nice web interface.
-
-👉 **[See WEB_INTERFACE.md for the complete guide](WEB_INTERFACE.md)** 👈
+👉 **[See WEB_INTERFACE.md for details](WEB_INTERFACE.md)** 👈
 
 ---
 
