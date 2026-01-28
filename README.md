@@ -4,6 +4,30 @@
 
 Citrus is a custom-built neural network that learns writing styles from text samples and generates new content in that style. Built entirely from scratch using only NumPy, without any pre-trained models or existing AI frameworks.
 
+---
+
+## ⚡ TL;DR - Just Want to Use It? (Not Hard!)
+
+**Three commands to get started:**
+
+```bash
+pip install -r requirements.txt    # Install (30 seconds)
+python easy_start.py               # Interactive guided mode (easiest!)
+```
+
+**OR if you prefer direct commands:**
+
+```bash
+pip install -r requirements.txt
+python add_writing.py              # Add your writing samples
+python train.py --epochs 10        # Train the AI (5 minutes)
+python generate.py --checkpoint checkpoints/checkpoint_epoch_10.pkl --prompt "Your prompt here"
+```
+
+**See [QUICKSTART.md](QUICKSTART.md) for the super simple 3-step guide!**
+
+---
+
 ## 🎯 What Citrus Does
 
 Citrus learns to write like you (or any author you provide samples from):
