@@ -4,6 +4,27 @@
 
 Citrus learns your writing style and generates new text in your voice. No installation, no commands, just open and use!
 
+> **🎉 RECENT UPDATE: AI Quality MASSIVELY Improved!**  
+> Fixed the gibberish problem - now produces actual English! [See what changed →](AI_IMPROVEMENTS.md)
+
+---
+
+## 🚨 IMPORTANT: AI Now Actually Works! (No More Gibberish)
+
+**Major improvements just released:**
+
+✅ **Fixed gibberish output** - Now generates real English sentences  
+✅ **Actually learns from your writing** - Uses ALL your text, not just 200 characters  
+✅ **Complete training algorithm** - All network weights update properly  
+✅ **Better defaults** - 50 epochs, medium model (2.5x more training)  
+✅ **Sample data included** - "Load Sample Writing" button for instant testing  
+
+**Before:** `"xq#$@!mzz..."` ❌  
+**After:** `"The morning sun filtered through the curtains, casting soft golden light across the room..."` ✅
+
+👉 **[Read AI_IMPROVEMENTS.md to see all fixes](AI_IMPROVEMENTS.md)** 👈  
+👉 **[Read TRAINING_GUIDE.md to watch it learn](TRAINING_GUIDE.md)** 👈
+
 ---
 
 ## 🌟 ULTIMATE SIMPLE MODE - Just Open One File!
@@ -19,6 +40,7 @@ Citrus learns your writing style and generates new text in your voice. No instal
 ✅ No server to start  
 ✅ Works 100% in your browser  
 ✅ Everything stays on your computer  
+✅ **Now produces quality output (not gibberish!)** 🎉
 
 **👉 [Read JUST_OPEN_THIS.md](JUST_OPEN_THIS.md) 👈**
 
@@ -26,7 +48,9 @@ Citrus learns your writing style and generates new text in your voice. No instal
 1. Find the file called `index.html`
 2. Double-click it (like opening any file)
 3. Your browser opens with Citrus AI
-4. Follow the 3 steps on the page!
+4. Click "Load Sample Writing" to try it out
+5. Click "Train AI" and watch it learn!
+6. Generate text and see real English (not gibberish!)
 
 **No technical knowledge needed. If you can open a file, you can use this!**
 
