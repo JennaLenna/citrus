@@ -312,10 +312,16 @@
             <p style="margin-bottom: 15px; color: #6c757d;">
                 Paste any writing samples in your style (stories, emails, blog posts, etc.)
             </p>
+            <div style="margin-bottom: 10px;">
+                <button onclick="loadSampleData()" class="btn-secondary" style="background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                    📝 Load Sample Writing
+                </button>
+                <span style="margin-left: 10px; color: #6c757d; font-size: 13px;">(Good for testing)</span>
+            </div>
             <textarea id="trainingText" placeholder="Paste your writing here... The more text you provide, the better the AI will learn your style!"></textarea>
             <div style="margin-top: 10px; color: #6c757d; font-size: 14px;">
                 Current length: <span id="textLength">0</span> characters
-                (Recommended: at least 2,000 characters)
+                <strong>(Need at least 1,000 for decent results)</strong>
             </div>
         </div>
         
@@ -331,12 +337,14 @@
             
             <div class="settings">
                 <div class="setting-item">
-                    <label>Training Rounds: <span class="value-display" id="epochsValue">20</span></label>
-                    <input type="range" id="epochs" min="10" max="100" value="20" step="10">
+                    <label>Training Rounds: <span class="value-display" id="epochsValue">50</span></label>
+                    <input type="range" id="epochs" min="20" max="200" value="50" step="10">
+                    <small style="color: #6c757d; font-size: 12px;">More rounds = better quality (but slower)</small>
                 </div>
                 <div class="setting-item">
-                    <label>Model Size: <span class="value-display" id="sizeValue">Small</span></label>
-                    <input type="range" id="modelSize" min="1" max="3" value="1" step="1">
+                    <label>Model Size: <span class="value-display" id="sizeValue">Medium</span></label>
+                    <input type="range" id="modelSize" min="1" max="3" value="2" step="1">
+                    <small style="color: #6c757d; font-size: 12px;">Larger = smarter (but slower)</small>
                 </div>
             </div>
             
@@ -492,40 +500,83 @@
             train(text, epochs, progressCallback) {
                 const learningRate = 0.01;
                 
+                // FIXED: Use ALL the training text, not just 200 characters!
+                // This was the main reason for gibberish output
+                const sequence = text;
+                
                 for (let epoch = 0; epoch < epochs; epoch++) {
-                    // Reset hidden state
+                    // Reset hidden state for each epoch
                     this.h = new Array(this.hiddenSize).fill(0);
                     
                     let loss = 0;
-                    const sequence = text.slice(0, Math.min(text.length, 200)); // Train on subset
+                    let validChars = 0;
                     
+                    // Train on the entire text
                     for (let i = 0; i < sequence.length - 1; i++) {
                         const currentChar = charToIdx[sequence[i]];
                         const nextChar = charToIdx[sequence[i + 1]];
                         
                         if (currentChar === undefined || nextChar === undefined) continue;
                         
+                        // Store previous hidden state for weight updates
+                        const prevH = [...this.h];
+                        
                         // Forward pass
                         const probs = this.forward(currentChar);
                         
                         // Calculate loss (cross-entropy)
                         loss += -Math.log(probs[nextChar] + 1e-10);
+                        validChars++;
                         
-                        // Simple gradient descent update
+                        // Backpropagation - compute gradients
                         const delta = [...probs];
-                        delta[nextChar] -= 1;
+                        delta[nextChar] -= 1;  // Gradient of cross-entropy loss
                         
-                        // Update output weights
+                        // Update output weights (Who, bo)
                         for (let j = 0; j < this.vocabSize; j++) {
                             for (let k = 0; k < this.hiddenSize; k++) {
                                 this.Who[j][k] -= learningRate * delta[j] * this.h[k];
                             }
                             this.bo[j] -= learningRate * delta[j];
                         }
+                        
+                        // FIXED: Also update hidden layer weights!
+                        // Compute gradient for hidden layer
+                        const dhRaw = new Array(this.hiddenSize).fill(0);
+                        for (let j = 0; j < this.vocabSize; j++) {
+                            for (let k = 0; k < this.hiddenSize; k++) {
+                                dhRaw[k] += delta[j] * this.Who[j][k];
+                            }
+                        }
+                        
+                        // Derivative of tanh
+                        const dh = dhRaw.map((d, idx) => d * (1 - this.h[idx] * this.h[idx]));
+                        
+                        // Update input-to-hidden weights (Wih)
+                        const x = new Array(this.vocabSize).fill(0);
+                        x[currentChar] = 1;
+                        
+                        for (let j = 0; j < this.hiddenSize; j++) {
+                            for (let k = 0; k < this.vocabSize; k++) {
+                                this.Wih[j][k] -= learningRate * dh[j] * x[k];
+                            }
+                        }
+                        
+                        // Update hidden-to-hidden weights (Whh)
+                        for (let j = 0; j < this.hiddenSize; j++) {
+                            for (let k = 0; k < this.hiddenSize; k++) {
+                                this.Whh[j][k] -= learningRate * dh[j] * prevH[k];
+                            }
+                        }
+                        
+                        // Update hidden bias
+                        for (let j = 0; j < this.hiddenSize; j++) {
+                            this.bh[j] -= learningRate * dh[j];
+                        }
                     }
                     
-                    if (progressCallback) {
-                        progressCallback(epoch + 1, epochs, loss / sequence.length);
+                    if (progressCallback && validChars > 0) {
+                        progressCallback(epoch + 1, epochs, loss / validChars);
                     }
                 }
             }
@@ -590,12 +641,38 @@
             document.getElementById(elementId).style.display = 'none';
         }
         
+        function loadSampleData() {
+            // Good quality sample text that will actually train well
+            const sampleText = `The morning sun filtered through the curtains, casting soft golden light across the room. Emma stirred in her bed, reluctant to leave the warmth of her blankets. She could hear birds singing outside her window, their cheerful melodies a gentle reminder that a new day had begun.
+
+As she finally rose and made her way to the kitchen, the familiar routine brought her comfort. The kettle whistled as she prepared her morning tea, steam rising in delicate spirals. She wrapped her hands around the warm mug and moved to the window seat, her favorite spot to watch the world wake up.
+
+The neighborhood was already coming to life. Mr. Peterson was walking his golden retriever down the street, just as he did every morning at seven thirty. The bakery across the way had its lights on, and Emma could almost smell the fresh bread being pulled from the ovens. These small, predictable moments made up the fabric of her daily life.
+
+She thought about the day ahead. There were errands to run, emails to answer, a friend to meet for lunch. Nothing extraordinary, but that was fine. Emma had learned to find beauty in the ordinary, joy in the simple rhythms of everyday existence.
+
+The afternoon brought rain, soft pattering on the windows that created a cozy atmosphere indoors. Perfect weather for reading, Emma thought as she settled into her armchair with a well-worn novel. She had read this book before, but that didn't matter. Sometimes the best stories were the ones you could return to again and again.
+
+As evening approached, Emma prepared dinner in her small but efficient kitchen. Chopping vegetables became a meditative practice, the repetitive motion allowing her mind to wander. She thought about her grandmother, who had taught her to cook, emphasizing that food made with care always tasted better.
+
+The day ended as quietly as it had begun, with Emma watching the sunset paint the sky in shades of orange and pink. Tomorrow would bring its own small adventures, its own quiet moments to treasure. This was enough, she realized. This simple, peaceful life was exactly enough.`;
+            
+            document.getElementById('trainingText').value = sampleText;
+            document.getElementById('textLength').textContent = sampleText.length.toLocaleString();
+            showStatus('trainStatus', '✅ Sample writing loaded! You can now train the AI.', 'success');
+        }
+        
         function startTraining() {
             const text = document.getElementById('trainingText').value;
             
-            if (!text || text.length < 100) {
-                showStatus('trainStatus', '❌ Please add more text (at least 100 characters)', 'error');
+            if (!text || text.length < 500) {
+                showStatus('trainStatus', '❌ Please add more text! Need at least 500 characters for decent results. Click "Load Sample Writing" to try with example text.', 'error');
                 return;
+            }
+            
+            if (text.length < 1000) {
+                showStatus('trainStatus', '⚠️ Warning: More text (1,000+ chars) will give MUCH better results. Training anyway...', 'info');
+                // Continue but warn user
             }
             
             // Build vocabulary
