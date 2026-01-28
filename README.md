@@ -18,7 +18,6 @@ Citrus implements a complete LSTM-based language model from scratch:
 - **Character/Word-level tokenization** - Process text at character or word level
 - **Embedding layer** - Dense vector representations of tokens
 - **LSTM cells** - Long Short-Term Memory units for sequence modeling
-- **Attention mechanisms** - Capture long-range dependencies (optional)
 - **Softmax output** - Probability distribution over vocabulary
 - **Adam optimizer** - Adaptive learning rate optimization
 - **Gradient clipping** - Prevent exploding gradients

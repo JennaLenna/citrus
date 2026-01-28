@@ -135,7 +135,8 @@ class Trainer:
     
     def train(self, sequences: List[List[int]], targets: List[int], 
               epochs: int = 10, batch_size: int = 32, 
-              checkpoint_dir: Optional[str] = None) -> None:
+              checkpoint_dir: Optional[str] = None,
+              preprocessor=None) -> None:
         """
         Train the model.
         
@@ -145,6 +146,7 @@ class Trainer:
             epochs: Number of training epochs
             batch_size: Number of samples per batch
             checkpoint_dir: Directory to save checkpoints
+            preprocessor: TextPreprocessor instance to save with checkpoints
         """
         num_samples = len(sequences)
         
@@ -179,15 +181,16 @@ class Trainer:
             
             # Save checkpoint
             if checkpoint_dir and (epoch + 1) % 5 == 0:
-                self.save_checkpoint(checkpoint_dir, epoch + 1)
+                self.save_checkpoint(checkpoint_dir, epoch + 1, preprocessor)
     
-    def save_checkpoint(self, checkpoint_dir: str, epoch: int) -> None:
+    def save_checkpoint(self, checkpoint_dir: str, epoch: int, preprocessor=None) -> None:
         """
         Save training checkpoint.
         
         Args:
             checkpoint_dir: Directory to save checkpoint
             epoch: Current epoch number
+            preprocessor: TextPreprocessor instance to save with model (optional but recommended)
         """
         os.makedirs(checkpoint_dir, exist_ok=True)
         
@@ -200,6 +203,15 @@ class Trainer:
             'hidden_size': self.model.hidden_size
         }
         
+        # Save preprocessor if provided
+        if preprocessor is not None:
+            checkpoint['preprocessor'] = {
+                'level': preprocessor.level,
+                'vocab': preprocessor.vocab,
+                'reverse_vocab': preprocessor.reverse_vocab,
+                'vocab_size': preprocessor.vocab_size
+            }
+        
         checkpoint_path = os.path.join(checkpoint_dir, f'checkpoint_epoch_{epoch}.pkl')
         with open(checkpoint_path, 'wb') as f:
             pickle.dump(checkpoint, f)
@@ -207,16 +219,20 @@ class Trainer:
         print(f"Checkpoint saved to {checkpoint_path}")
     
     @staticmethod
-    def load_checkpoint(checkpoint_path: str) -> LanguageModel:
+    def load_checkpoint(checkpoint_path: str, load_preprocessor: bool = True):
         """
         Load model from checkpoint.
         
         Args:
             checkpoint_path: Path to checkpoint file
+            load_preprocessor: Whether to also load and return the preprocessor
             
         Returns:
-            Loaded language model
+            If load_preprocessor=False: LanguageModel
+            If load_preprocessor=True: Tuple of (LanguageModel, TextPreprocessor or None)
         """
+        from ..data.preprocessing import TextPreprocessor
+        
         with open(checkpoint_path, 'rb') as f:
             checkpoint = pickle.load(f)
         
@@ -228,4 +244,16 @@ class Trainer:
         
         model.set_params(checkpoint['model_params'])
         
-        return model
+        if not load_preprocessor:
+            return model
+        
+        # Load preprocessor if available
+        preprocessor = None
+        if 'preprocessor' in checkpoint:
+            prep_data = checkpoint['preprocessor']
+            preprocessor = TextPreprocessor(level=prep_data['level'])
+            preprocessor.vocab = prep_data['vocab']
+            preprocessor.reverse_vocab = prep_data['reverse_vocab']
+            preprocessor.vocab_size = prep_data['vocab_size']
+        
+        return model, preprocessor

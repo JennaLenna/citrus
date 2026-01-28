@@ -6,7 +6,8 @@ Quick verification that the system works end-to-end.
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Add current directory to path to import citrus package
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from citrus.data.preprocessing import TextPreprocessor, SequenceGenerator
 from citrus.core.model import LanguageModel

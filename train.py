@@ -7,8 +7,8 @@ import argparse
 import os
 import sys
 
-# Add parent directory to path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Add current directory to path to import citrus package
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from citrus.data.loader import DataLoader
 from citrus.core.model import LanguageModel
@@ -139,12 +139,13 @@ def main():
         targets=targets,
         epochs=args.epochs,
         batch_size=args.batch_size,
-        checkpoint_dir=args.checkpoint_dir
+        checkpoint_dir=args.checkpoint_dir,
+        preprocessor=data_loader.preprocessor
     )
     
     # Save final model
     print("\n5. Saving final model...")
-    trainer.save_checkpoint(args.checkpoint_dir, args.epochs)
+    trainer.save_checkpoint(args.checkpoint_dir, args.epochs, data_loader.preprocessor)
     
     print("\n" + "=" * 60)
     print("Training completed successfully!")

@@ -31,10 +31,4 @@ setup(
     install_requires=[
         "numpy>=1.21.0",
     ],
-    entry_points={
-        "console_scripts": [
-            "citrus-train=train:main",
-            "citrus-generate=generate:main",
-        ],
-    },
 )

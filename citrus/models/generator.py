@@ -28,13 +28,16 @@ class TextGenerator:
         
         Args:
             probs: Probability distribution
-            temperature: Sampling temperature (higher = more random)
+            temperature: Sampling temperature (higher = more random). Range: 0.1 to 2.0
             top_k: If > 0, sample from top k tokens only
             
         Returns:
             Sampled token index
         """
         probs = probs.flatten()
+        
+        # Validate and clip temperature
+        temperature = max(0.1, min(2.0, temperature))
         
         # Apply temperature
         if temperature != 1.0:

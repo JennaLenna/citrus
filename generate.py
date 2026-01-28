@@ -8,8 +8,8 @@ import os
 import sys
 import pickle
 
-# Add parent directory to path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Add current directory to path to import citrus package
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from citrus.models.trainer import Trainer
 from citrus.models.generator import TextGenerator
@@ -46,7 +46,7 @@ def main():
         '--temperature',
         type=float,
         default=0.8,
-        help='Sampling temperature (higher = more random)'
+        help='Sampling temperature (0.1-2.0, higher = more random)'
     )
     
     parser.add_argument(
@@ -75,23 +75,21 @@ def main():
         print(f"Error: Checkpoint file not found: {args.checkpoint}")
         return 1
     
-    model = Trainer.load_checkpoint(args.checkpoint)
+    model, preprocessor = Trainer.load_checkpoint(args.checkpoint, load_preprocessor=True)
     
-    # Load preprocessor info from checkpoint
-    with open(args.checkpoint, 'rb') as f:
-        checkpoint = pickle.load(f)
+    # Check if preprocessor was saved with checkpoint
+    if preprocessor is None:
+        print("\n   Warning: Preprocessor not found in checkpoint.")
+        print("   This checkpoint was created with an older version.")
+        print("   Generated text may not be accurate.")
+        print("   Please retrain the model to include preprocessor.")
+        # Create a basic preprocessor as fallback
+        preprocessor = TextPreprocessor(level='char')
+        # Try to build a minimal vocab (will be incomplete)
+        preprocessor.vocab_size = model.vocab_size
     
-    # We need to reconstruct the preprocessor
-    # For now, we'll create a simple one with the vocab from checkpoint
+    # Set up text generator
     print("\n2. Setting up text generator...")
-    
-    # Create a basic preprocessor (in production, this would be saved with the model)
-    preprocessor = TextPreprocessor(level='char')
-    
-    # Try to reconstruct vocabulary if possible
-    # This is a limitation - in production, save preprocessor with model
-    print("   Note: Using basic preprocessor. For best results, ensure vocabulary matches training.")
-    
     generator = TextGenerator(model, preprocessor)
     
     # Generate text
