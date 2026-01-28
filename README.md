@@ -8,6 +8,8 @@ Citrus is a custom-built neural network that learns writing styles from text sam
 
 ## ⚡ TL;DR - Just Want to Use It? (Not Hard!)
 
+**👉 [See HOW_TO_USE.md for the visual step-by-step guide](HOW_TO_USE.md) 👈**
+
 **Three commands to get started:**
 
 ```bash
@@ -24,7 +26,11 @@ python train.py --epochs 10        # Train the AI (5 minutes)
 python generate.py --checkpoint checkpoints/checkpoint_epoch_10.pkl --prompt "Your prompt here"
 ```
 
-**See [QUICKSTART.md](QUICKSTART.md) for the super simple 3-step guide!**
+**📚 Documentation for different needs:**
+- **[HOW_TO_USE.md](HOW_TO_USE.md)** - Visual guide, answers "Is it hard?" (NO!)
+- **[QUICKSTART.md](QUICKSTART.md)** - Ultra-simple 3-step guide
+- **[GETTING_STARTED.md](GETTING_STARTED.md)** - Detailed tutorial with tips
+- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Technical deep dive
 
 ---
 
