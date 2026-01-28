@@ -1,27 +1,34 @@
 # Citrus 🍊
 
-**A from-scratch AI writing style transfer system**
+**Your Personal Writing AI - Works 100% in Your Browser!**
 
-Citrus is a custom-built neural network that learns writing styles from text samples and generates new content in that style. Built entirely from scratch using only NumPy, without any pre-trained models or existing AI frameworks.
+Citrus learns your writing style and generates new text in your voice. No installation, no commands, just open and use!
 
 ---
 
-## 🎯 SUPER SIMPLE MODE (No Commands, No Installation!)
+## 🌟 ULTIMATE SIMPLE MODE - Just Open One File!
 
-**The absolute easiest way - Just double-click two files!**
+**THE EASIEST WAY - No commands, no installation, no setup!**
 
-### Step 1: Start the helper
-- **Windows:** Double-click `START.bat`
-- **Mac/Linux:** Double-click `START.sh`
-- (A window opens - keep it open!)
+### Just Double-Click: `index.html`
 
-### Step 2: Open the app
-- Double-click `citrus_simple.html`
-- It opens in your browser - use it like any website!
+**That's literally it!** The file opens in your browser and everything works! 
 
-**That's it!** 🎉
+✅ No installation needed  
+✅ No commands to type  
+✅ No server to start  
+✅ Works 100% in your browser  
+✅ Everything stays on your computer  
 
-👉 **[Full guide: SIMPLE_START.md](SIMPLE_START.md)** 👈
+**👉 [Read JUST_OPEN_THIS.md](JUST_OPEN_THIS.md) 👈**
+
+### What You Do:
+1. Find the file called `index.html`
+2. Double-click it (like opening any file)
+3. Your browser opens with Citrus AI
+4. Follow the 3 steps on the page!
+
+**No technical knowledge needed. If you can open a file, you can use this!**
 
 ---
 
