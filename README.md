@@ -6,19 +6,38 @@ Citrus is a custom-built neural network that learns writing styles from text sam
 
 ---
 
+## 🌐 NEW: Web Interface! (No Coding Required!)
+
+**The easiest way to use Citrus - through your web browser!**
+
+```bash
+./start_web.sh
+# Then open: http://localhost:5000
+```
+
+**Perfect for non-coders!** Upload files, train, and generate - all through a nice web interface.
+
+👉 **[See WEB_INTERFACE.md for the complete guide](WEB_INTERFACE.md)** 👈
+
+---
+
 ## ⚡ TL;DR - Just Want to Use It? (Not Hard!)
 
 **👉 [See HOW_TO_USE.md for the visual step-by-step guide](HOW_TO_USE.md) 👈**
 
-**Three commands to get started:**
-
+**Option 1: Web Interface (Easiest!)**
 ```bash
-pip install -r requirements.txt    # Install (30 seconds)
-python easy_start.py               # Interactive guided mode (easiest!)
+./start_web.sh              # Start web server
+# Open browser: http://localhost:5000
 ```
 
-**OR if you prefer direct commands:**
+**Option 2: Interactive Command Line**
+```bash
+pip install -r requirements.txt    # Install (30 seconds)
+python easy_start.py               # Interactive guided mode
+```
 
+**Option 3: Direct Commands**
 ```bash
 pip install -r requirements.txt
 python add_writing.py              # Add your writing samples
@@ -27,6 +46,7 @@ python generate.py --checkpoint checkpoints/checkpoint_epoch_10.pkl --prompt "Yo
 ```
 
 **📚 Documentation for different needs:**
+- **[WEB_INTERFACE.md](WEB_INTERFACE.md)** - Use through web browser (NO CODING!)
 - **[HOW_TO_USE.md](HOW_TO_USE.md)** - Visual guide, answers "Is it hard?" (NO!)
 - **[QUICKSTART.md](QUICKSTART.md)** - Ultra-simple 3-step guide
 - **[GETTING_STARTED.md](GETTING_STARTED.md)** - Detailed tutorial with tips

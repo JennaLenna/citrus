@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Text - Citrus AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>✨ Generate Text</h1>
+        <p>Use your trained model to generate new text in your writing style!</p>
+    </div>
+
+    <div class="generate-section">
+        <div class="settings-card">
+            <h3>Generation Settings</h3>
+            <form id="generateForm">
+                <div class="form-group">
+                    <label for="checkpoint">Select Model</label>
+                    <select id="checkpoint" name="checkpoint" class="form-control">
+                        <option value="">Loading checkpoints...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="prompt">Starting Prompt</label>
+                    <input type="text" id="prompt" name="prompt" class="form-control" 
+                           placeholder="e.g., 'The sun was setting' or 'Once upon a time'"
+                           value="The">
+                    <span class="hint">The AI will continue from this text</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="length">Length (characters)</label>
+                    <input type="range" id="length" name="length" min="50" max="1000" value="300" class="slider">
+                    <div class="slider-value">
+                        <span id="lengthValue">300</span> characters
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="temperature">Creativity Level</label>
+                    <input type="range" id="temperature" name="temperature" min="0.1" max="2.0" step="0.1" value="0.8" class="slider">
+                    <div class="slider-value">
+                        <span id="temperatureValue">0.8</span>
+                        <span class="hint">(0.3 = conservative, 0.8 = balanced, 1.5 = creative)</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="generateBtn" class="btn btn-success btn-large">
+                    Generate Text ✨
+                </button>
+            </form>
+        </div>
+
+        <div class="output-card">
+            <h3>Generated Text</h3>
+            <div id="outputSection" class="output-section">
+                <p class="placeholder">Generated text will appear here...</p>
+            </div>
+            <div id="outputActions" class="output-actions" style="display: none;">
+                <button id="copyBtn" class="btn btn-secondary">📋 Copy Text</button>
+                <button id="regenerateBtn" class="btn btn-primary">🔄 Generate Again</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tips-section">
+        <h3>💡 Tips for Great Results</h3>
+        <ul>
+            <li><strong>Prompts:</strong> Try different starting phrases to see what the AI generates</li>
+            <li><strong>Temperature:</strong> Lower values (0.3-0.5) = more predictable, higher values (1.0-1.5) = more creative</li>
+            <li><strong>Length:</strong> Longer generations may drift from the original style</li>
+            <li><strong>Experiment!</strong> Try the same prompt multiple times with different settings</li>
+        </ul>
+    </div>
+
+    <div class="examples-section">
+        <h3>Example Prompts</h3>
+        <div class="example-prompts">
+            <button class="example-btn" data-prompt="The sun was setting">The sun was setting</button>
+            <button class="example-btn" data-prompt="It was a dark">It was a dark</button>
+            <button class="example-btn" data-prompt="Once upon a time">Once upon a time</button>
+            <button class="example-btn" data-prompt="In the beginning">In the beginning</button>
+        </div>
+    </div>
+</div>
+
+<div id="messageBox" class="message-box"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/generate.js') }}"></script>
+{% endblock %}

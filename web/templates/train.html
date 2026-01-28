@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Train Model - Citrus AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>🧠 Train the AI</h1>
+        <p>Configure and start training your model on your writing samples</p>
+    </div>
+
+    <div class="train-section">
+        <div class="settings-card">
+            <h3>Training Settings</h3>
+            <form id="trainForm">
+                <div class="form-group">
+                    <label for="epochs">Number of Epochs</label>
+                    <input type="range" id="epochs" name="epochs" min="1" max="50" value="10" class="slider">
+                    <div class="slider-value">
+                        <span id="epochsValue">10</span> epochs
+                        <span class="hint">(5 = quick test, 10 = recommended, 20+ = best quality)</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hiddenSize">Model Size</label>
+                    <select id="hiddenSize" name="hiddenSize" class="form-control">
+                        <option value="64">Small (64) - Fast, less accurate</option>
+                        <option value="128" selected>Medium (128) - Recommended</option>
+                        <option value="256">Large (256) - Slower, more accurate</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="useDefaults" checked>
+                        Use recommended settings (easier!)
+                    </label>
+                </div>
+
+                <div id="advancedSettings" style="display: none;">
+                    <h4>Advanced Options</h4>
+                    <div class="form-group">
+                        <label for="seqLength">Sequence Length</label>
+                        <input type="number" id="seqLength" name="seqLength" value="50" min="20" max="200" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="batchSize">Batch Size</label>
+                        <input type="number" id="batchSize" name="batchSize" value="16" min="8" max="64" class="form-control">
+                    </div>
+                </div>
+
+                <button type="submit" id="startTrainBtn" class="btn btn-success btn-large">
+                    Start Training 🚀
+                </button>
+            </form>
+        </div>
+
+        <div class="progress-card">
+            <h3>Training Progress</h3>
+            <div id="progressSection" class="progress-section">
+                <p class="status-message">Ready to start training</p>
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+                </div>
+                <p class="progress-text">
+                    <span id="progressPercent">0</span>% complete
+                </p>
+                <div id="trainingStats" class="training-stats" style="display: none;">
+                    <p>Epoch: <span id="currentEpoch">0</span> / <span id="totalEpochs">0</span></p>
+                    <p>Loss: <span id="currentLoss">0.00</span></p>
+                    <p>Status: <span id="statusMessage">Initializing...</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h3>ℹ️ About Training</h3>
+        <ul>
+            <li><strong>Epochs:</strong> How many times the AI reviews your writing. More epochs = better learning (but takes longer)</li>
+            <li><strong>Model Size:</strong> Bigger models can learn more complex patterns but train slower</li>
+            <li><strong>Time Required:</strong> Expect 5-15 minutes depending on your settings and amount of text</li>
+            <li><strong>What happens:</strong> The AI learns your vocabulary, sentence patterns, and writing style</li>
+        </ul>
+    </div>
+
+    <div class="next-step" id="nextStepSection" style="display: none;">
+        <a href="/generate" class="btn btn-success btn-large">
+            Generate Text →
+        </a>
+    </div>
+</div>
+
+<div id="messageBox" class="message-box"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/train.js') }}"></script>
+{% endblock %}
