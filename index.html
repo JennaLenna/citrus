@@ -497,88 +497,86 @@
                 return this.softmax(o);
             }
             
-            train(text, epochs, progressCallback) {
+            train(text, progressCallback) {
                 const learningRate = 0.01;
                 
                 // FIXED: Use ALL the training text, not just 200 characters!
                 // This was the main reason for gibberish output
                 const sequence = text;
                 
-                for (let epoch = 0; epoch < epochs; epoch++) {
-                    // Reset hidden state for each epoch
-                    this.h = new Array(this.hiddenSize).fill(0);
+                // Train for ONE epoch (called repeatedly by trainBatch)
+                // Reset hidden state
+                this.h = new Array(this.hiddenSize).fill(0);
+                
+                let loss = 0;
+                let validChars = 0;
+                
+                // Train on the entire text
+                for (let i = 0; i < sequence.length - 1; i++) {
+                    const currentChar = charToIdx[sequence[i]];
+                    const nextChar = charToIdx[sequence[i + 1]];
                     
-                    let loss = 0;
-                    let validChars = 0;
+                    if (currentChar === undefined || nextChar === undefined) continue;
                     
-                    // Train on the entire text
-                    for (let i = 0; i < sequence.length - 1; i++) {
-                        const currentChar = charToIdx[sequence[i]];
-                        const nextChar = charToIdx[sequence[i + 1]];
-                        
-                        if (currentChar === undefined || nextChar === undefined) continue;
-                        
-                        // Store previous hidden state for weight updates
-                        const prevH = [...this.h];
-                        
-                        // Forward pass
-                        const probs = this.forward(currentChar);
-                        
-                        // Calculate loss (cross-entropy)
-                        loss += -Math.log(probs[nextChar] + 1e-10);
-                        validChars++;
-                        
-                        // Backpropagation - compute gradients
-                        const delta = [...probs];
-                        delta[nextChar] -= 1;  // Gradient of cross-entropy loss
-                        
-                        // Update output weights (Who, bo)
-                        for (let j = 0; j < this.vocabSize; j++) {
-                            for (let k = 0; k < this.hiddenSize; k++) {
-                                this.Who[j][k] -= learningRate * delta[j] * this.h[k];
-                            }
-                            this.bo[j] -= learningRate * delta[j];
+                    // Store previous hidden state for weight updates
+                    const prevH = [...this.h];
+                    
+                    // Forward pass
+                    const probs = this.forward(currentChar);
+                    
+                    // Calculate loss (cross-entropy)
+                    loss += -Math.log(probs[nextChar] + 1e-10);
+                    validChars++;
+                    
+                    // Backpropagation - compute gradients
+                    const delta = [...probs];
+                    delta[nextChar] -= 1;  // Gradient of cross-entropy loss
+                    
+                    // Update output weights (Who, bo)
+                    for (let j = 0; j < this.vocabSize; j++) {
+                        for (let k = 0; k < this.hiddenSize; k++) {
+                            this.Who[j][k] -= learningRate * delta[j] * this.h[k];
                         }
-                        
-                        // FIXED: Also update hidden layer weights!
-                        // Compute gradient for hidden layer
-                        const dhRaw = new Array(this.hiddenSize).fill(0);
-                        for (let j = 0; j < this.vocabSize; j++) {
-                            for (let k = 0; k < this.hiddenSize; k++) {
-                                dhRaw[k] += delta[j] * this.Who[j][k];
-                            }
-                        }
-                        
-                        // Derivative of tanh
-                        const dh = dhRaw.map((d, idx) => d * (1 - this.h[idx] * this.h[idx]));
-                        
-                        // Update input-to-hidden weights (Wih)
-                        const x = new Array(this.vocabSize).fill(0);
-                        x[currentChar] = 1;
-                        
-                        for (let j = 0; j < this.hiddenSize; j++) {
-                            for (let k = 0; k < this.vocabSize; k++) {
-                                this.Wih[j][k] -= learningRate * dh[j] * x[k];
-                            }
-                        }
-                        
-                        // Update hidden-to-hidden weights (Whh)
-                        for (let j = 0; j < this.hiddenSize; j++) {
-                            for (let k = 0; k < this.hiddenSize; k++) {
-                                this.Whh[j][k] -= learningRate * dh[j] * prevH[k];
-                            }
-                        }
-                        
-                        // Update hidden bias
-                        for (let j = 0; j < this.hiddenSize; j++) {
-                            this.bh[j] -= learningRate * dh[j];
+                        this.bo[j] -= learningRate * delta[j];
+                    }
+                    
+                    // FIXED: Also update hidden layer weights!
+                    // Compute gradient for hidden layer
+                    const dhRaw = new Array(this.hiddenSize).fill(0);
+                    for (let j = 0; j < this.vocabSize; j++) {
+                        for (let k = 0; k < this.hiddenSize; k++) {
+                            dhRaw[k] += delta[j] * this.Who[j][k];
                         }
                     }
                     
-                    if (progressCallback && validChars > 0) {
-                        progressCallback(epoch + 1, epochs, loss / validChars);
+                    // Derivative of tanh
+                    const dh = dhRaw.map((d, idx) => d * (1 - this.h[idx] * this.h[idx]));
+                    
+                    // Update input-to-hidden weights (Wih)
+                    const x = new Array(this.vocabSize).fill(0);
+                    x[currentChar] = 1;
+                    
+                    for (let j = 0; j < this.hiddenSize; j++) {
+                        for (let k = 0; k < this.vocabSize; k++) {
+                            this.Wih[j][k] -= learningRate * dh[j] * x[k];
+                        }
+                    }
+                    
+                    // Update hidden-to-hidden weights (Whh)
+                    for (let j = 0; j < this.hiddenSize; j++) {
+                        for (let k = 0; k < this.hiddenSize; k++) {
+                            this.Whh[j][k] -= learningRate * dh[j] * prevH[k];
+                        }
+                    }
+                    
+                    // Update hidden bias
+                    for (let j = 0; j < this.hiddenSize; j++) {
+                        this.bh[j] -= learningRate * dh[j];
                     }
                 }
+                
+                // Return the loss for this epoch
+                return validChars > 0 ? loss / validChars : 0;
             }
             
             generate(startText, length, temperature = 1.0) {
@@ -709,16 +707,19 @@ The day ended as quietly as it had begun, with Emma watching the sunset paint th
             function trainBatch() {
                 const endEpoch = Math.min(currentEpoch + batchSize, epochs);
                 
+                // Train for the batch of epochs
                 for (let e = currentEpoch; e < endEpoch; e++) {
-                    model.train(text, 1, (epoch, total, loss) => {
-                        const progress = ((currentEpoch + epoch) / epochs * 100).toFixed(0);
-                        document.getElementById('progressFill').style.width = progress + '%';
-                        document.getElementById('progressFill').textContent = progress + '%';
-                        
-                        showStatus('trainStatus', 
-                            `Training... Round ${currentEpoch + epoch}/${epochs} - Loss: ${loss.toFixed(3)}`, 
-                            'info');
-                    });
+                    // Train for ONE epoch and get the loss
+                    const loss = model.train(text);
+                    
+                    // Update progress UI
+                    const progress = ((e + 1) / epochs * 100).toFixed(0);
+                    document.getElementById('progressFill').style.width = progress + '%';
+                    document.getElementById('progressFill').textContent = progress + '%';
+                    
+                    showStatus('trainStatus', 
+                        `Training... Round ${e + 1}/${epochs} - Loss: ${loss.toFixed(3)}`, 
+                        'info');
                 }
                 
                 currentEpoch = endEpoch;
