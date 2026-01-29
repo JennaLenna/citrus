@@ -799,7 +799,7 @@ The day ended as quietly as it had begun, with Emma watching the sunset paint th
                 const vocabSize = vocab.length;
                 const hiddenSize = 32;
                 
-                model = new SimpleRNN(vocabSize, hiddenSize);
+                model = new SimpleLM(vocabSize, hiddenSize);
                 
                 // Initialize with better-than-random weights (Xavier initialization scaled for English)
                 const scale = Math.sqrt(2.0 / vocabSize);
