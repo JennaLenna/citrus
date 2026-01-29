@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Files - Citrus AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>📝 Upload Your Writing</h1>
+        <p>Upload .txt files containing your writing samples. The AI will learn from these!</p>
+    </div>
+
+    <div class="upload-section">
+        <div class="upload-card">
+            <h3>Upload New File</h3>
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="fileInput" accept=".txt" style="display: none;">
+                <div class="upload-icon">📄</div>
+                <p class="upload-text">
+                    <strong>Click to select</strong> or drag and drop a .txt file here
+                </p>
+                <p class="upload-hint">
+                    Maximum file size: 16 MB
+                </p>
+            </div>
+            <button id="uploadBtn" class="btn btn-primary" style="display: none;">
+                Upload File
+            </button>
+        </div>
+
+        <div class="files-card">
+            <h3>Your Files</h3>
+            <div id="filesList" class="files-list">
+                <p class="loading">Loading files...</p>
+            </div>
+            <div class="files-summary">
+                <p>Total files: <span id="totalFiles">0</span></p>
+                <p>Total size: <span id="totalSize">0</span> KB</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tips-section">
+        <h3>💡 Tips for Best Results</h3>
+        <ul>
+            <li>Upload <strong>plain text (.txt)</strong> files only</li>
+            <li>Include <strong>at least 10-20 KB</strong> of text for good results</li>
+            <li>Keep <strong>consistent writing style</strong> across files</li>
+            <li>You can upload multiple files - they'll all be used for training</li>
+            <li>Already have a sample file included to try the system!</li>
+        </ul>
+    </div>
+
+    <div class="next-step">
+        <a href="/train" class="btn btn-success btn-large">
+            Ready to Train →
+        </a>
+    </div>
+</div>
+
+<div id="messageBox" class="message-box"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Citrus AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="hero">
+        <h1 class="hero-title">
+            <span class="logo-big">🍊</span>
+            Welcome to Citrus AI
+        </h1>
+        <p class="hero-subtitle">
+            Train an AI to write in your style - No coding required!
+        </p>
+    </div>
+
+    <div class="info-cards">
+        <div class="card">
+            <div class="card-icon">📝</div>
+            <h3>1. Upload Your Writing</h3>
+            <p>Upload .txt files with your writing samples. The more text, the better the results!</p>
+            <a href="/upload" class="btn btn-primary">Upload Files</a>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🧠</div>
+            <h3>2. Train the AI</h3>
+            <p>Let the AI learn from your writing style. Choose how long to train (5-20 epochs recommended).</p>
+            <a href="/train" class="btn btn-primary">Train Model</a>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">✨</div>
+            <h3>3. Generate Text</h3>
+            <p>Give the AI a prompt and watch it generate new text in your writing style!</p>
+            <a href="/generate" class="btn btn-primary">Generate Text</a>
+        </div>
+    </div>
+
+    <div class="quick-tips">
+        <h2>Quick Tips</h2>
+        <ul>
+            <li>💡 <strong>More writing = better results</strong> - Aim for at least 10-20 KB of text</li>
+            <li>⏱️ <strong>Training takes time</strong> - 5-10 minutes for small datasets, longer for more text</li>
+            <li>🎨 <strong>Experiment!</strong> - Try different prompts and settings to see what works best</li>
+            <li>📄 <strong>Sample included</strong> - We've included a sample file so you can try it right away</li>
+        </ul>
+    </div>
+
+    <div class="how-it-works">
+        <h2>How It Works</h2>
+        <p>
+            Citrus AI is a neural network built from scratch that learns patterns in your writing.
+            It doesn't use any pre-trained models - everything is trained specifically on YOUR writing style!
+        </p>
+        <div class="steps">
+            <div class="step">
+                <span class="step-number">1</span>
+                <p>Upload your writing as .txt files</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <p>AI learns your vocabulary and patterns</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <p>Generate new text in your style!</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
